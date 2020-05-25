@@ -1,5 +1,5 @@
 build:
-	gcc main.c -lsndfile -o o.out
+	gcc -o o.out main.c modifyingFunctions.c -lsndfile 
 
 run: 
 	./o.out
