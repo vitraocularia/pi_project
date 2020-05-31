@@ -1,41 +1,117 @@
 #include <stdio.h>
 #include <sndfile.h>
+#include <unistd.h>
 #include "modifyingFunctions.h"
 #include "helpers.h"
+#include "samplerateModifier.h"
+#include "menuHandler.h"
+#include "fileHandler.h"
+
+const int pathSize = 1000;
+
+struct limit
+{
+    size_t from;
+    size_t to;
+
+} interval;
+
+void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t frames)
+{
+    switch (activityNumber)
+    {
+    case 1:
+        changeSamplerate(fileInfo);
+        break;
+    case 10:
+        printf("This activity allows to change the frequency of the whole sound file.\n");
+        sleep(4);
+        break;
+    case 2:
+        getIntervalIndices(fileInfo, &interval.from, &interval.to);
+        volDecrease(data, interval.from, interval.to);
+        break;
+    case 20:
+        printf("This activity gradually decrases the volume of the whole sound file or its fragment.\n");
+        sleep(4);
+        break;
+    case 3:
+        getIntervalIndices(fileInfo, &interval.from, &interval.to);
+        volIncrease(data, interval.from, interval.to);
+        break;
+    case 30:
+        printf("This activity gradually increases the volume of the whole sound file or its fragment.\n");
+        sleep(4);
+        break;
+    case 4:
+        getIntervalIndices(fileInfo, &interval.from, &interval.to);
+        reverseTable(data, interval.from, interval.to);
+        break;
+    case 40:
+        printf("This activity reverses the whole sound file or its fragment.\n");
+        sleep(3);
+        break;
+    case 5:
+        quicksort(data, 0, size - 1);  
+        break;
+    case 50:
+        printf("This activity sorts the whole sound file by the amplitude of the sounds.\n");
+        sleep(4);
+        break;
+    case 6:
+        saveFile(fileInfo, data, frames);
+        break;
+    case 60:
+        printf("Choose to save the file.\n");
+        sleep(2);
+        break;
+    case 7:
+        quitProgram(file);
+        break;
+    case 70:
+        printf("Choose to quit the program.\nRemember to save your file first.\n" );
+        sleep(4);
+        break;
+    default:
+        break;
+    }
+}
+
 
 int main(int argc, char const *argv[])
-{
-    char* path = "sounds/bell.wav";
-    SF_INFO fileInfo; 
-    SNDFILE* file = sf_open(path, SFM_READ, &fileInfo);
+{    
+    char filePath[pathSize];
 
-    int frames = fileInfo.frames;
-    size_t size = fileInfo.channels * frames;
+    printf("Enter a path to your sound file:\n");
+    scanf("%s", filePath);
+
+    SF_INFO fileInfo;
+    SNDFILE* file = sf_open(filePath, SFM_READ, &fileInfo);
+
+    while (file == NULL)
+    {
+        printf("Wrong path. Please try again: \n");
+        scanf("%s", filePath);
+        file = sf_open(filePath, SFM_READ, &fileInfo);
+    }
+
+    printf("File opened successfully.\n");
+    sleep(1);
+    
+    size_t size = fileInfo.frames * fileInfo.channels;
+    sf_count_t frames = fileInfo.frames;
+
     float data[size];
 
-    float reversedData[size];
+    sf_count_t framesCount = sf_readf_float(file, data, fileInfo.frames);
 
-    float sortedData[size];
-    copyTable(data, sortedData, size);
-    quicksort(sortedData, 0, size - 1);
+    while ( 1 )
+    {
+        printMainMenu();
+        int activityNumber = getActivity();
 
-    sf_count_t framesCount = sf_readf_float(file, data, frames);
+        callActivity(file, &fileInfo, data, size, activityNumber, frames);
+    }
 
-    reverseTable(data, reversedData, size);
-
-    SNDFILE* saveFile = sf_open("out/reversedSound.wav", SFM_WRITE, &fileInfo);
-
-    sf_writef_float(saveFile, reversedData, frames);
-
-    sf_close(saveFile);
-
-    saveFile = sf_open("out/sortedSound.wav", SFM_WRITE, &fileInfo);
-    sf_writef_float(saveFile, sortedData, frames);
-
-    sf_close(saveFile);
-
-    sf_close(file);
-
-    printf("Hello World!");
     return 0;
 }

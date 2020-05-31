@@ -11,21 +11,23 @@ void swap(float* a, float* b)
     *b = tmp;
 }
 
-void reverseTable(float table[], float result[], size_t tableSize)
+void reverseTable(float table[], size_t from, size_t to)
 {
-    for (size_t i = 0; i < tableSize; i++)
+    size_t modificationSize = to - from + 1;
+
+    for (size_t i = 0; i < modificationSize/2; i++)
     {
-        result[i] = table[tableSize - i - 1];
+        swap(&table[from + i], &table[to - i]);
     }
 }
 
-void reverseTableRef(float table[], size_t tableSize)
-{
-    for (size_t i = 0; i < tableSize/2; i++)
-    {
-        swap(&table[i], &table[tableSize - 1 - i]);
-    }
-}
+// void reverseTableRef(float table[], size_t tableSize)
+// {
+//     for (size_t i = 0; i < tableSize/2; i++)
+//     {
+//         swap(&table[i], &table[tableSize - 1 - i]);
+//     }
+// }
 
 void quicksort(float table[], size_t left, size_t right)
 {
@@ -57,9 +59,11 @@ size_t partition(float table[], size_t left, size_t right)
     return i;
 }
 
-void volDecrease(float table[], size_t tableSize)
+void volDecrease(float table[], size_t from, size_t to)
 {
-    int sectionSize = tableSize/100;
+    size_t modificationSize = to - from + 1;
+
+    int sectionSize = modificationSize/100;
     size_t index;
 
     float multiplier = 1;
@@ -70,21 +74,23 @@ void volDecrease(float table[], size_t tableSize)
 
         for (size_t j = 0; j < sectionSize; j++)
         {
-            table[ index + j] *= multiplier;
+            table[ from + index + j] *= multiplier;
         }
 
         multiplier -= 0.01;
     }
 
-    for (size_t i = index + sectionSize; i < tableSize; i++)
+    for (size_t i = index + sectionSize; i < modificationSize; i++)
     {
-        table[i] *= 0;
+        table[from + i] *= 0;
     }
 }
 
-void volIncrease(float table[], size_t tableSize)
+void volIncrease(float table[], size_t from, size_t to)
 {
-    int sectionSize = tableSize/100;
+    size_t modificationSize = to - from + 1;
+
+    int sectionSize = modificationSize/100;
     size_t index;
 
     float multiplier = 0;
@@ -95,14 +101,14 @@ void volIncrease(float table[], size_t tableSize)
 
         for (size_t j = 0; j < sectionSize; j++)
         {
-            table[ index + j] *= multiplier;
+            table[ from + index + j] *= multiplier;
         }
 
         multiplier += 0.01;
     }
 
-    for (size_t i = index + sectionSize; i < tableSize; i++)
+    for (size_t i = index + sectionSize; i < modificationSize; i++)
     {
-        table[i] *= 1;
+        table[from + i] *= 1;
     }
 }

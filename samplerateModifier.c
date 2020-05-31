@@ -4,7 +4,7 @@ const int sampleratesNumber = 12;
 int samplerates[sampleratesNumber] = {8000, 11025, 16000, 22050, 44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000};
 
 
-void askForSamplerate(SF_INFO* fileInfo)
+void changeSamplerate(SF_INFO* fileInfo)
 {
     int newSamplerate = 0;
 
@@ -16,13 +16,16 @@ void askForSamplerate(SF_INFO* fileInfo)
         fflush(stdin);
     }
     
-    fileInfo->samplerate = samplerates[newSamplerate-1];
+    fileInfo->samplerate = samplerates[newSamplerate - 1];
 }
 
 
 void printMenu()
 {
+    char* header = " -----------------\n";
+
     printf("Enter correct number to choose the samplerate:\n");
+    printf("%s", header);
     printf("|NUMBER|SAMPLERATE|\n");
 
     for (int i = 0; i < sampleratesNumber; i++)
@@ -33,4 +36,6 @@ void printMenu()
         printf("%10d", samplerates[i]);
         printf("|\n");
     }
+
+    printf("%s", header);
 }
