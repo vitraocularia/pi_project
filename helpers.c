@@ -20,7 +20,7 @@ void getIntervalIndices(SF_INFO* fileInfo, size_t* from, size_t* to)
 
     if (*to > fileInfo->channels*fileInfo->frames)
     {
-        *to = fileInfo->channels*fileInfo->frames;
+        *to = fileInfo->channels*fileInfo->frames - 1;
     }
 
 }

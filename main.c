@@ -8,6 +8,7 @@
 #include "fileHandler.h"
 
 const int pathSize = 1000;
+bool isFileSaved = false;
 
 struct limit
 {
@@ -15,6 +16,12 @@ struct limit
     size_t to;
 
 } interval;
+
+struct table
+{
+    size_t size;
+    float* data;
+} table;
 
 void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t *frames)
 {
@@ -70,15 +77,18 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         sleep(3);
         break;
     case 7:
-        saveFile(fileInfo, data, *frames);
+        isFileSaved = saveFile(fileInfo, data, *frames);
         break;
     case 70:
         printf("Choose to save the file.\n");
         sleep(3);
         break;
     case 8:
-        quitProgram(data, file);
-        break;
+        if(isFileSaved)
+        {
+            quitProgram(data, file);
+            break;
+        }
     case 80:
         printf("Choose to quit the program.\nRemember to save your file first.\n" );
         sleep(3);
