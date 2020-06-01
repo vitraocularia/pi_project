@@ -4,4 +4,4 @@
 #include <sndfile.h>
 
 void saveFile(SF_INFO* , float [], sf_count_t);
-void quitProgram(SNDFILE*);
+void quitProgram(float [], SNDFILE*);

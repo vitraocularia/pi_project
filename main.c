@@ -16,7 +16,7 @@ struct limit
 
 } interval;
 
-void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t frames)
+void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t *frames)
 {
     switch (activityNumber)
     {
@@ -25,7 +25,7 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         break;
     case 10:
         printf("This activity allows to change the frequency of the whole sound file.\n");
-        sleep(4);
+        sleep(3);
         break;
     case 2:
         getIntervalIndices(fileInfo, &interval.from, &interval.to);
@@ -33,7 +33,7 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         break;
     case 20:
         printf("This activity gradually decrases the volume of the whole sound file or its fragment.\n");
-        sleep(4);
+        sleep(3);
         break;
     case 3:
         getIntervalIndices(fileInfo, &interval.from, &interval.to);
@@ -41,36 +41,47 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         break;
     case 30:
         printf("This activity gradually increases the volume of the whole sound file or its fragment.\n");
-        sleep(4);
+        sleep(3);
         break;
     case 4:
         getIntervalIndices(fileInfo, &interval.from, &interval.to);
-        reverseTable(data, interval.from, interval.to);
+        size = extractPartOfATable(data, interval.from, interval.to);
+        data = realloc(data, size * sizeof(float));
+        fileInfo->frames = size / fileInfo->channels;
+        *frames = fileInfo->frames;
         break;
     case 40:
-        printf("This activity reverses the whole sound file or its fragment.\n");
+        printf("This activity allows to extract a part of the sound file.\n");
         sleep(3);
         break;
     case 5:
-        quicksort(data, 0, size - 1);  
+        getIntervalIndices(fileInfo, &interval.from, &interval.to);
+        reverseTable(data, interval.from, interval.to);
         break;
     case 50:
-        printf("This activity sorts the whole sound file by the amplitude of the sounds.\n");
-        sleep(4);
+        printf("This activity reverses the whole sound file or its fragment.\n");
+        sleep(3);
         break;
     case 6:
-        saveFile(fileInfo, data, frames);
+        quicksort(data, 0, size - 1);  
         break;
     case 60:
-        printf("Choose to save the file.\n");
-        sleep(2);
+        printf("This activity sorts the whole sound file by the amplitude of the sounds.\n");
+        sleep(3);
         break;
     case 7:
-        quitProgram(file);
+        saveFile(fileInfo, data, *frames);
         break;
     case 70:
+        printf("Choose to save the file.\n");
+        sleep(3);
+        break;
+    case 8:
+        quitProgram(data, file);
+        break;
+    case 80:
         printf("Choose to quit the program.\nRemember to save your file first.\n" );
-        sleep(4);
+        sleep(3);
         break;
     default:
         break;
@@ -101,7 +112,8 @@ int main(int argc, char const *argv[])
     size_t size = fileInfo.frames * fileInfo.channels;
     sf_count_t frames = fileInfo.frames;
 
-    float data[size];
+    float* data = (float*)malloc(size*sizeof(float));
+    // float data[size];
 
     sf_count_t framesCount = sf_readf_float(file, data, fileInfo.frames);
 
@@ -110,7 +122,7 @@ int main(int argc, char const *argv[])
         printMainMenu();
         int activityNumber = getActivity();
 
-        callActivity(file, &fileInfo, data, size, activityNumber, frames);
+        callActivity(file, &fileInfo, data, size, activityNumber, &frames);
     }
 
     return 0;

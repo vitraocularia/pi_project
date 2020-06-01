@@ -16,6 +16,8 @@ void saveFile(SF_INFO* fileInfo, float data[], sf_count_t frames)
 
     // printf("%s", newPath);
 
+    printf("frames: %lld", frames);
+
     SNDFILE* saveFile = sf_open(newPath, SFM_WRITE, fileInfo);
 
     sf_writef_float(saveFile, data, frames);
@@ -25,8 +27,9 @@ void saveFile(SF_INFO* fileInfo, float data[], sf_count_t frames)
     printf("File saved successfully.\n");
 }
 
-void quitProgram(SNDFILE* originalFile)
+void quitProgram(float data[], SNDFILE* originalFile)
 {
+    free(data);
     sf_close(originalFile);
     exit(0);
 }

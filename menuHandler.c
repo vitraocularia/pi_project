@@ -1,7 +1,7 @@
 #include "menuHandler.h"
 
-const int activitiesCount = 7;
-const char * activities[] = {"change samplerate", "decrease volume", "increase volume", "reverse", "sort", "save", "quit"};
+const int activitiesCount = 8;
+const char * activities[] = {"change samplerate", "decrease volume", "increase volume", "cut a part", "reverse", "sort", "save", "quit"};
 
 void printMainMenu()
 {
