@@ -21,6 +21,18 @@ void reverseTable(float table[], size_t from, size_t to)
     }
 }
 
+size_t extractPartOfATable(float table[], size_t from, size_t to)
+{
+    size_t newSize = to - from + 1;
+
+    for (size_t i = 0; i < newSize; i++)
+    {
+        table[i] = table[from + i];
+    }
+
+    return newSize;
+}
+
 // void reverseTableRef(float table[], size_t tableSize)
 // {
 //     for (size_t i = 0; i < tableSize/2; i++)
@@ -74,7 +86,7 @@ void volDecrease(float table[], size_t from, size_t to)
 
         for (size_t j = 0; j < sectionSize; j++)
         {
-            table[ from + index + j] *= multiplier;
+            table[ from + index + j ] *= multiplier;
         }
 
         multiplier -= 0.01;
