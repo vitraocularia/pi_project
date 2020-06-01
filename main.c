@@ -17,12 +17,6 @@ struct limit
 
 } interval;
 
-struct table
-{
-    size_t size;
-    float* data;
-} table;
-
 void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t *frames)
 {
     switch (activityNumber)
