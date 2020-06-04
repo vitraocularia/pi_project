@@ -2,6 +2,10 @@
 
 const int newFileNameSize = 100;
 
+/* This function asks the user for a name of their new sound file and saves it in the "out" directory.
+It returns information if the file was saved successfully. 
+We need this information in case the user forgets to save the file before calling quit function.*/
+
 bool saveFile(SF_INFO* fileInfo, float data[], sf_count_t frames)
 {
     char newFileName[newFileNameSize];
@@ -28,6 +32,8 @@ bool saveFile(SF_INFO* fileInfo, float data[], sf_count_t frames)
 
     return false;
 }
+
+/* This function quits the program. Before doing so, it frees memory allocated for the data and closes the original file.*/
 
 void quitProgram(float data[], SNDFILE* originalFile)
 {

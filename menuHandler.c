@@ -1,7 +1,9 @@
 #include "menuHandler.h"
 
-const int activitiesCount = 8;
-const char * activities[] = {"change samplerate", "decrease volume", "increase volume", "cut a part", "reverse", "sort", "save", "quit"};
+const int activitiesCount = 7;
+const char * activities[] = {"change samplerate", "decrease volume", "increase volume", "cut a part", "reverse", "save", "quit"};
+
+/* In this function we show the user all possible activities and instruct them how to choose one.*/
 
 void printMainMenu()
 {
@@ -18,6 +20,8 @@ void printMainMenu()
         printf("%s", underline);
     }
 }
+
+/* This function asks the user for their choice until they choose a correct number.*/
 
 int getActivity()
 {

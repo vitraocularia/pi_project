@@ -17,6 +17,9 @@ struct limit
 
 } interval;
 
+
+/* This functions allows to call the activity chosen by the user.*/
+
 void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, int activityNumber, sf_count_t *frames)
 {
     switch (activityNumber)
@@ -64,27 +67,32 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         sleep(3);
         break;
     case 6:
-        quicksort(data, 0, size - 1);  
+        isFileSaved = saveFile(fileInfo, data, *frames);
+        sleep(1);
         break;
     case 60:
-        printf("This activity sorts the whole sound file by the amplitude of the sounds.\n");
-        sleep(3);
-        break;
-    case 7:
-        isFileSaved = saveFile(fileInfo, data, *frames);
-        break;
-    case 70:
         printf("Choose to save the file.\n");
         sleep(3);
         break;
-    case 8:
-        if(isFileSaved)
+    case 7:
+        if(isFileSaved == false)
         {
-            quitProgram(data, file);
-            break;
+            printf("You haven't saved your file.\nDo you want to quit anyway?\n0 - no\n1 - yes\n");
+            int quitDecision;
+            while (scanf("%d", &quitDecision) != 1 || (quitDecision < 0 || quitDecision > 1))
+            {
+                printf("Enter 1 to quit or 0 to return to the main menu.\n");
+                fflush(stdin);
+            }
+            if (quitDecision == 0)
+            {
+                break;
+            }
         }
-    case 80:
-        printf("Choose to quit the program.\nRemember to save your file first.\n" );
+        quitProgram(data, file);
+        break;
+    case 70:
+        printf("Choose to quit the program.\n" );
         sleep(3);
         break;
     default:
@@ -95,6 +103,10 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
 
 int main(int argc, char const *argv[])
 {    
+
+    /* We get a correct path to the file that user wants to modify. As we open the file, we get the pointer
+    to SNDFILE struct and we save some crucial information about the file in the SF_INFO struct.*/
+
     char filePath[pathSize];
 
     printf("Enter a path to your sound file:\n");
@@ -112,14 +124,19 @@ int main(int argc, char const *argv[])
 
     printf("File opened successfully.\n");
     sleep(1);
+
+    /* We need to allocate memory for the array data in which we will keep all amplitudes of the sound file.
+    We get the information about the size of the array from the SF_INFO struct and we fill the array
+    while calling sf_readf_float function.*/
     
     size_t size = fileInfo.frames * fileInfo.channels;
     sf_count_t frames = fileInfo.frames;
 
     float* data = (float*)malloc(size*sizeof(float));
-    // float data[size];
 
     sf_count_t framesCount = sf_readf_float(file, data, fileInfo.frames);
+
+    /* With all those information we may show the menu repeatedly until user decides to quit the program.*/
 
     while ( 1 )
     {

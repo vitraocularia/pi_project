@@ -5,9 +5,14 @@ int samplerates[sampleratesNumber] = {8000, 11025, 16000, 22050, 44100, 48000, 8
 
 void printSampleratesMenu();
 
+/* In this function we show the user possible samplerates and we ask them which samplerate they want to apply until
+they choose a correct number. Then we simply modify the fileInfo struct.*/
+
 
 void changeSamplerate(SF_INFO* fileInfo)
 {
+    printf("The current samplerate of your file is %d Hz.\n", fileInfo->samplerate);
+
     int newSamplerate = 0;
 
     printSampleratesMenu();

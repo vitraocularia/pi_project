@@ -1,10 +1,6 @@
 #include "modifyingFunctions.h"
 
-const size_t SIZE_T_MAX = 18446744073709551615;
-
-size_t partition(float table[], size_t left, size_t right);
 void volModify(float table[], size_t from, size_t to, float startMultipler, float multiplerMod);
-
 
 void swap(float* a, float* b)
 {
@@ -13,15 +9,21 @@ void swap(float* a, float* b)
     *b = tmp;
 }
 
+/* This function reverses the order of the sounds in given interval.*/
+
 void reverseTable(float table[], size_t from, size_t to)
 {
     size_t modificationSize = to - from + 1;
+    // printf("%zu\n\n", modificationSize);
 
     for (size_t i = 0; i < modificationSize/2; i++)
     {
         swap(&table[from + i], &table[to - i]);
     }
 }
+
+/* This functions overwrites the first positions in the array with data from chosen interval;
+it returns the size of the interval, so we can reallocate the memory for the data array.*/
 
 size_t extractPartOfATable(float table[], size_t from, size_t to)
 {
@@ -35,35 +37,7 @@ size_t extractPartOfATable(float table[], size_t from, size_t to)
     return newSize;
 }
 
-void quicksort(float table[], size_t left, size_t right)
-{
-    if (left < right && right != SIZE_T_MAX)
-    {
-        size_t pivot = partition(table, left, right);
-        quicksort(table, left, pivot-1);
-        quicksort(table, pivot+1, right);
-    }
-}
-
-size_t partition(float table[], size_t left, size_t right)
-{
-    float pivot_value = table[right];
-    
-    size_t i = left - 1;
-    
-    for (size_t j = left; j < right; j++)
-    {
-        if (table[j] < pivot_value)
-        {
-            i += 1;
-            swap(&table[i], &table[j]);
-        }
-    }
-
-    i += 1;
-    swap(&table[i], &table[right]);
-    return i;
-}
+/* These two functions allow to gradually change the volume of the sound by changing the amplitude.*/
 
 void volDecrease(float table[], size_t from, size_t to)
 {
@@ -74,6 +48,11 @@ void volIncrease(float table[], size_t from, size_t to)
 {
     volModify(table, from, to, 0.0, 0.01);
 }
+
+/* In this function we divide the data array into 100 segments of equal size and we change the amplitude in each segment
+by multiplying it by a multiplier. After each segment we change the value of the multiplier, so the difference in volume
+of two adjacent segments is about 1%. Depending on the startMultiplier value, we multiply the reamining amplitudes by 0% or 
+100%.*/
 
 void volModify(float table[], size_t from, size_t to, float startMultipler, float multiplerMod)
 {
