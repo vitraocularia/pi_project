@@ -26,7 +26,7 @@ bool saveFile(SF_INFO* fileInfo, float data[], sf_count_t frames)
 
     if(res == 0)
     {
-        printf("File saved successfully.\n");
+        printf("File saved successfully.\nYou may find it in the \"out\" directory.\n");
         return true;
     }
 

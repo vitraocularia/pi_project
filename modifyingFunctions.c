@@ -14,7 +14,6 @@ void swap(float* a, float* b)
 void reverseTable(float table[], size_t from, size_t to)
 {
     size_t modificationSize = to - from + 1;
-    // printf("%zu\n\n", modificationSize);
 
     for (size_t i = 0; i < modificationSize/2; i++)
     {

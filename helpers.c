@@ -27,8 +27,6 @@ void getIntervalIndices(SF_INFO* fileInfo, size_t* from, size_t* to)
         *to = fileInfo->channels*fileInfo->frames - 1;
     }
 
-    // printf("%zu %zu/n/n", *from, *to);
-
 }
 
 

@@ -68,7 +68,7 @@ void callActivity(SNDFILE* file, SF_INFO * fileInfo, float data[], size_t size, 
         break;
     case 6:
         isFileSaved = saveFile(fileInfo, data, *frames);
-        sleep(1);
+        sleep(2);
         break;
     case 60:
         printf("Choose to save the file.\n");
