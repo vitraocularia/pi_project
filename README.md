@@ -9,7 +9,7 @@ C Compiler
 
 Usage:
 
-make
+make and then 
 make run
 
 Imput files:
